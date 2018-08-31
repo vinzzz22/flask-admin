@@ -267,13 +267,15 @@ class BaseView(with_metaclass(AdminViewMeta, BaseViewClass)):
                                    subdomain=self.admin.subdomain,
                                    template_folder=op.join('templates', self.admin.template_mode),
                                    static_folder=self.static_folder,
-                                   static_url_path=self.static_url_path)
+                                   static_url_path=self.static_url_path,
+                                   host=admin.host)
 
         for url, name, methods in self._urls:
             self.blueprint.add_url_rule(url,
                                         name,
                                         getattr(self, name),
-                                        methods=methods)
+                                        methods=methods,
+                                        host=admin.host)
 
         return self.blueprint
 
@@ -464,7 +466,8 @@ class Admin(object):
                  static_url_path=None,
                  base_template=None,
                  template_mode=None,
-                 category_icon_classes=None):
+                 category_icon_classes=None,
+                 host=None):
         """
             Constructor.
 
@@ -514,6 +517,7 @@ class Admin(object):
         self.url = url or self.index_view.url
         self.static_url_path = static_url_path
         self.subdomain = subdomain
+        self.host = host
         self.base_template = base_template or 'admin/base.html'
         self.template_mode = template_mode or 'bootstrap2'
         self.category_icon_classes = category_icon_classes or dict()
